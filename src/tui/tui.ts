@@ -1,3 +1,4 @@
+import os from "node:os";
 import {
   CombinedAutocompleteProvider,
   Container,
@@ -454,6 +455,11 @@ export async function runTui(opts: TuiOptions) {
     const reasoning = sessionInfo.reasoningLevel ?? "off";
     const reasoningLabel =
       reasoning === "on" ? "reasoning" : reasoning === "stream" ? "reasoning:stream" : null;
+    const showWorkspace = config.ui?.tui?.statusLine?.showWorkspace ?? false;
+    const workspaceLabel =
+      showWorkspace && sessionInfo.workspace
+        ? `cwd ${sessionInfo.workspace.replace(os.homedir(), "~")}`
+        : null;
     const footerParts = [
       `agent ${agentLabel}`,
       `session ${sessionLabel}`,
@@ -462,6 +468,7 @@ export async function runTui(opts: TuiOptions) {
       verbose !== "off" ? `verbose ${verbose}` : null,
       reasoningLabel,
       tokens,
+      workspaceLabel,
     ].filter(Boolean);
     footer.setText(theme.dim(footerParts.join(" | ")));
   };

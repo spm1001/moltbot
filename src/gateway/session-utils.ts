@@ -585,6 +585,13 @@ export function listSessionsFromStore(params: {
         lastChannel: deliveryFields.lastChannel ?? entry?.lastChannel,
         lastTo: deliveryFields.lastTo ?? entry?.lastTo,
         lastAccountId: deliveryFields.lastAccountId ?? entry?.lastAccountId,
+        workspace: (() => {
+          const parsedKey = parseAgentSessionKey(key);
+          const sessionAgentId = parsedKey
+            ? normalizeAgentId(parsedKey.agentId)
+            : resolveDefaultAgentId(cfg);
+          return resolveAgentWorkspaceDir(cfg, sessionAgentId);
+        })(),
       };
     })
     .sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0));

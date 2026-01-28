@@ -128,6 +128,7 @@ export function createSessionActions(context: SessionActionContext) {
           responseUsage: entry?.responseUsage,
           updatedAt: entry?.updatedAt ?? null,
           displayName: entry?.displayName,
+          workspace: entry?.workspace,
         };
       } catch (err) {
         chatLog.addSystem(`sessions list failed: ${String(err)}`);

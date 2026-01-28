@@ -73,6 +73,12 @@ export type MoltbotConfig = {
       /** Assistant avatar (emoji, short text, or image URL/data URI). */
       avatar?: string;
     };
+    tui?: {
+      statusLine?: {
+        /** Show workspace path in status line (default: false). */
+        showWorkspace?: boolean;
+      };
+    };
   };
   skills?: SkillsConfig;
   plugins?: PluginsConfig;

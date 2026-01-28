@@ -37,6 +37,7 @@ export type SessionInfo = {
   responseUsage?: "on" | "off" | "tokens" | "full";
   updatedAt?: number | null;
   displayName?: string;
+  workspace?: string;
 };
 
 export type SessionScope = "per-sender" | "global";

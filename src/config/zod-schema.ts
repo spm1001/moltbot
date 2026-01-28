@@ -176,6 +176,17 @@ export const MoltbotSchema = z
           })
           .strict()
           .optional(),
+        tui: z
+          .object({
+            statusLine: z
+              .object({
+                showWorkspace: z.boolean().optional(),
+              })
+              .strict()
+              .optional(),
+          })
+          .strict()
+          .optional(),
       })
       .strict()
       .optional(),
