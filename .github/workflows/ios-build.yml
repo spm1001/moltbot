@@ -1,0 +1,30 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/ios/**'
+      - 'apps/shared/**'
+  workflow_dispatch:  # manual trigger
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install dependencies
+        run: brew install xcodegen swiftformat swiftlint
+      
+      - name: Generate Xcode project
+        run: cd apps/ios && xcodegen generate
+      
+      - name: Build (no signing)
+        run: |
+          xcodebuild -project apps/ios/Moltbot.xcodeproj \
+            -scheme Moltbot \
+            -destination 'generic/platform=iOS' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO
