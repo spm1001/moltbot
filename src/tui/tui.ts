@@ -394,6 +394,7 @@ export async function runTui(opts: TuiOptions) {
   };
 
   const renderStatus = () => {
+    const isCompact = config.ui?.tui?.statusLine?.compact ?? false;
     const isBusy = busyStates.has(activityStatus);
     if (isBusy) {
       if (!statusStartedAt || lastActivityStatus !== activityStatus) {
@@ -415,8 +416,13 @@ export async function runTui(opts: TuiOptions) {
       statusLoader?.stop();
       statusLoader = null;
       ensureStatusText();
-      const text = activityStatus ? `${connectionStatus} | ${activityStatus}` : connectionStatus;
-      statusText?.setText(theme.dim(text));
+      if (isCompact) {
+        statusText?.setText("");
+        updateFooter();
+      } else {
+        const text = activityStatus ? `${connectionStatus} | ${activityStatus}` : connectionStatus;
+        statusText?.setText(theme.dim(text));
+      }
     }
     lastActivityStatus = activityStatus;
   };
@@ -440,10 +446,13 @@ export async function runTui(opts: TuiOptions) {
 
   const updateFooter = () => {
     const statusLineConfig = config.ui?.tui?.statusLine;
+    const isCompact = statusLineConfig?.compact ?? false;
     const sessionKeyLabel = formatSessionKey(currentSessionKey);
-    const sessionLabel = sessionInfo.displayName
-      ? `${sessionKeyLabel} (${sessionInfo.displayName})`
-      : sessionKeyLabel;
+    const sessionLabel = isCompact
+      ? sessionKeyLabel
+      : sessionInfo.displayName
+        ? `${sessionKeyLabel} (${sessionInfo.displayName})`
+        : sessionKeyLabel;
     const agentLabelText = statusLineConfig?.agentLabel ?? "agent";
     const agentLabel = formatAgentLabel(currentAgentId);
     const showModel = statusLineConfig?.showModel ?? true;
@@ -466,7 +475,13 @@ export async function runTui(opts: TuiOptions) {
       showWorkspace && sessionInfo.workspace
         ? `cwd ${sessionInfo.workspace.replace(os.homedir(), "~")}`
         : null;
+    const statusLabel = isCompact
+      ? activityStatus
+        ? `${connectionStatus} | ${activityStatus}`
+        : connectionStatus
+      : null;
     const footerParts = [
+      statusLabel,
       `${agentLabelText} ${agentLabel}`,
       `session ${sessionLabel}`,
       modelLabel,

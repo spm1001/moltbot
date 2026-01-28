@@ -75,6 +75,8 @@ export type MoltbotConfig = {
     };
     tui?: {
       statusLine?: {
+        /** Compact mode: merge connection status into footer, hide session key details (default: false). */
+        compact?: boolean;
         /** Label for agent (default: "agent", e.g. "persona"). */
         agentLabel?: string;
         /** Show model in status line (default: true). */
