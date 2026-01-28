@@ -180,6 +180,9 @@ export const MoltbotSchema = z
           .object({
             statusLine: z
               .object({
+                agentLabel: z.string().optional(),
+                showModel: z.boolean().optional(),
+                showThinking: z.boolean().optional(),
                 showWorkspace: z.boolean().optional(),
               })
               .strict()

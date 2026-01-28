@@ -75,6 +75,12 @@ export type MoltbotConfig = {
     };
     tui?: {
       statusLine?: {
+        /** Label for agent (default: "agent", e.g. "persona"). */
+        agentLabel?: string;
+        /** Show model in status line (default: true). */
+        showModel?: boolean;
+        /** Show thinking/verbose/reasoning levels (default: true). */
+        showThinking?: boolean;
         /** Show workspace path in status line (default: false). */
         showWorkspace?: boolean;
       };

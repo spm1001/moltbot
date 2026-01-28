@@ -439,34 +439,40 @@ export async function runTui(opts: TuiOptions) {
   };
 
   const updateFooter = () => {
+    const statusLineConfig = config.ui?.tui?.statusLine;
     const sessionKeyLabel = formatSessionKey(currentSessionKey);
     const sessionLabel = sessionInfo.displayName
       ? `${sessionKeyLabel} (${sessionInfo.displayName})`
       : sessionKeyLabel;
+    const agentLabelText = statusLineConfig?.agentLabel ?? "agent";
     const agentLabel = formatAgentLabel(currentAgentId);
-    const modelLabel = sessionInfo.model
-      ? sessionInfo.modelProvider
-        ? `${sessionInfo.modelProvider}/${sessionInfo.model}`
-        : sessionInfo.model
-      : "unknown";
+    const showModel = statusLineConfig?.showModel ?? true;
+    const modelLabel = showModel
+      ? sessionInfo.model
+        ? sessionInfo.modelProvider
+          ? `${sessionInfo.modelProvider}/${sessionInfo.model}`
+          : sessionInfo.model
+        : "unknown"
+      : null;
     const tokens = formatTokens(sessionInfo.totalTokens ?? null, sessionInfo.contextTokens ?? null);
+    const showThinking = statusLineConfig?.showThinking ?? true;
     const think = sessionInfo.thinkingLevel ?? "off";
     const verbose = sessionInfo.verboseLevel ?? "off";
     const reasoning = sessionInfo.reasoningLevel ?? "off";
     const reasoningLabel =
       reasoning === "on" ? "reasoning" : reasoning === "stream" ? "reasoning:stream" : null;
-    const showWorkspace = config.ui?.tui?.statusLine?.showWorkspace ?? false;
+    const showWorkspace = statusLineConfig?.showWorkspace ?? false;
     const workspaceLabel =
       showWorkspace && sessionInfo.workspace
         ? `cwd ${sessionInfo.workspace.replace(os.homedir(), "~")}`
         : null;
     const footerParts = [
-      `agent ${agentLabel}`,
+      `${agentLabelText} ${agentLabel}`,
       `session ${sessionLabel}`,
       modelLabel,
-      think !== "off" ? `think ${think}` : null,
-      verbose !== "off" ? `verbose ${verbose}` : null,
-      reasoningLabel,
+      showThinking && think !== "off" ? `think ${think}` : null,
+      showThinking && verbose !== "off" ? `verbose ${verbose}` : null,
+      showThinking ? reasoningLabel : null,
       tokens,
       workspaceLabel,
     ].filter(Boolean);
